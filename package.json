@@ -1,0 +1,15 @@
+{
+  "name": "front-end_to-do_jsuniversal-_servingdata",
+  "version": "1.0.0",
+  "description": "Producto 2 de la asignatura de Desarrollo full stack de soluciones web con JavaScript y servicios web la parte de Back End",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

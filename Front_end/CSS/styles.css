@@ -205,6 +205,8 @@ body {
   color: white;
   width: 150px;
   height: 50px;
+  position: relative;
+  top: 100px;
 }
 
 .matematicas-card {

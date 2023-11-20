@@ -1,3 +1,5 @@
+var columnaDest = 0;
+
 // Datos JSON de las Cards
 var asignaturasData = {
   "23241": {
@@ -80,7 +82,8 @@ function dragAndDrop() {
 }
 
 // Función para abrir el modal de un nuevo asunto
-function drawModalAsignatura() {
+function drawModalAsignatura(columna) {
+  columnaDest = columna;
   // Restablecer el formulario
   $("#asignaturaForm")[0].reset();
 
@@ -90,7 +93,7 @@ function drawModalAsignatura() {
 
 // Haga clic en el botón "Añadir Asignatura".
 $("#añadir-asignatura").click(function () {
-  drawModalAsignatura();
+  drawModalAsignatura(0);
 });
   // Si viene definido un índice de asignatura, cargamos los datos en el formulario
 $("#editar-asignatura").click(function (index) {
@@ -112,6 +115,12 @@ $("#guardarAsignatura").click(function () {
   var color = $("#color").val();
   var dificultad = $("#dificultad").val();
 
+  if (nombreAsignatura == "" || fechaInicio  == ""  || fechaFin == "" || descripcion == "" || opinion == "" || color == "" || dificultad == "")
+  {
+    alert("faltan campos por rellenar")
+    return false;
+  }
+
   // Crear un nuevo objeto sujeto
   var newSubject = {
     name: nombreAsignatura,
@@ -130,7 +139,16 @@ $("#guardarAsignatura").click(function () {
 
   // Crear y añadir una nueva tarjeta
   var newCard = createCard(newIndex, newSubject);
-  $("#asignaturas-pending").append(newCard);
+  
+console.log(columnaDest);
+  if (columnaDest == 1)
+    $("#empezada").append(newCard);
+  if (columnaDest == 2)
+    $("#aprobada").append(newCard);
+  if (columnaDest == 3)
+    $("#suspendida").append(newCard);
+  if (columnaDest == 0)
+    $("#asignaturas-pending").append(newCard);
 
   // Ocultar el modal
   $("#modalAsignatura").modal("hide");

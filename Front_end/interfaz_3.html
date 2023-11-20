@@ -45,7 +45,7 @@
         <div class="container padding-top-lg">
           <div class="row justify-content-end">
             <div class="col-12 col-sm-4 text-end">
-              <button type="button" class="btn btn-primary" id="añadir-asignatura"  onclick="drawModalAsignatura(false)">
+              <button type="button" class="btn btn-primary" id="añadir-asignatura"  onclick="drawModalAsignatura(0)">
                 + Añadir Asignatura
               </button>
             </div></div>
@@ -68,39 +68,37 @@
         <div class="row ">
             
             <div class="col-4"> 
-            
               <div id="empezada" class="column flex">
-                
+              </div>
                 <button
                     id="task-add-1"
-                    onclick="drawModalAsignatura(false,$('#select-semana').val(),1)"
+                    onclick="drawModalAsignatura(1)"
                     type="button"
                     class="day-task-add btn btn-success">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
-                </div>
             </div>
             <div class="col-4"> 
               <div id="aprobada" class="column flex">
-                <button
+              </div>
+              <button
                     id="task-add-2"
-                    onclick="drawModalAsignatura(false,$('#select-semana').val(),2)"
+                    onclick="drawModalAsignatura(2)"
                     type="button"
                     class="day-task-add btn btn-success">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
-                </div>
             </div>
             <div class="col-4"> 
                 <div id="suspendida" class="column flex">
+                </div>
                 <button
                     id="task-add-3"
-                    onclick="drawModalAsignatura(false,$('#select-semana').val(),3)"
+                    onclick="drawModalAsignatura(3)"
                     type="button"
                     class="day-task-add btn btn-success">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
-                </div>
             </div>
         </div>
     </div>

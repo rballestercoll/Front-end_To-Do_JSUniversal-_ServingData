@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const connectDb = async () => {
-    const dbUrl = "mongodb+srv://apalaciosleo:DaTaBaSeUoC01@cluster0.orl3fqb.mongodb.net/"
+    const dbUrl = "mongodb+srv://JSUniversal:universal3@jsuniversal.nvil2uq.mongodb.net/jsuniversal?retryWrites=true&w=majority"
 
     const connectionParams = {
         useNewUrlParser: true,

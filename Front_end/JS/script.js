@@ -276,5 +276,5 @@ function drawSelectSemester(semesters, selected = null) {
 $(document).ready(function () {
   // coge los datos de semestres e inserta las cards de semestres en el DOM
   drawSemesters(semestersData);
-  drawSelectsemester(semestersData);
+  //drawSelectsemester(semestersData);
 });

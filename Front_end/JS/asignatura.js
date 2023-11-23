@@ -208,3 +208,27 @@ $("#select-semana").change(function () {
   // Update subjects based on the selected week if needed
 });
 */
+
+fetch('http://localhost:3000/api', {
+  method: 'POST',
+  headers: {'Content-Type': "application/json"},
+  body: JSON.stringify({
+    query: `
+    query {
+      getAllSemestre {
+        id
+        numSemester
+        opinion
+        dateStart
+        dateEnd
+        description
+        difficulty
+      }
+    }
+    `
+  })
+})
+.then(res => res.json())
+.then(data => {
+  console.log(data.data)
+})

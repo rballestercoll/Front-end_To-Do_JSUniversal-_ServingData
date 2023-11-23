@@ -114,6 +114,11 @@
 .text-right {
   text-align: right;
 }
+#semester-list {
+  display: flex;
+  flex-wrap: wrap; /* Asegura que las tarjetas se envuelvan a la siguiente línea cuando no haya suficiente espacio */
+  justify-content: space-between; /* Distribuye el espacio entre las tarjetas */
+}
 
 /*========== INTERFAZ 2 ==========*/
 

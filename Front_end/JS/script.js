@@ -186,50 +186,73 @@ function drawModalSemester(index) {
 
   // Añadimos el listener al evento de enviar el formulario para validar
   var form = document.getElementById("semestre-form");
-  form.addEventListener(
-    "submit",
-    function (event) {
-      // Validamos el formulario
-      if (!form.checkValidity()) {
-        // Si no valida, detenemos la acción
-        event.preventDefault();
-        event.stopPropagation();
-      }
+form.addEventListener(
+  "submit",
+  async function (event) {
+    event.preventDefault();
 
-      // Si valida, añadimos campos validados
+    // Validar el formulario
+    if (!form.checkValidity()) {
       form.classList.add("was-validated");
+      return;
+    }
 
-      // Recogemos los datos del formulario
-      var values = {};
-      $.each($("#semestre-form").serializeArray(), function (i, field) {
-        values[field.name] = field.value;
-      });
+    // Recoger datos del formulario
+    var values = {};
+    $.each($("#semestre-form").serializeArray(), function (i, field) {
+      values[field.name] = field.value;
+    });
 
-      // Guardamos el semestre en el objeto semesters
-      var newIndice = values["year"] + values["numSemester"];
-      if (typeof semestersData[newIndice] == "undefined") {
-        semestersData[newIndice] = new Object();
-      }
-      semestersData[newIndice].numSemester = values["numSemester"];
-      semestersData[newIndice].year = values["year"];
-      semestersData[newIndice].dateStart = values["dateStart"];
-      semestersData[newIndice].dateEnd = values["dateEnd"];
-      semestersData[newIndice].color = values["color"];
-      semestersData[newIndice].description = values["description"];
-      semestersData[newIndice].opinion = values["opinion"];
-      semestersData[newIndice].difficulty = values["difficulty"];
+    // Enviar la información al servidor GraphQL
+    const response = await fetch('https://n22twm-3000.csb.app/api', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          mutation CreateSemestre($SemestreInput: SemestreInput) {
+            createSemestre(SemestreInput: $SemestreInput) {
+              id
+              numSemester
+              year
+              dateStart
+              dateEnd
+              color
+              description
+              opinion
+              difficulty
+            }
+          }
+        `,
+        variables: {
+          SemestreInput: values,
+        },
+      }),
+    });
 
-      // Volvemos a dibujar las semestres
-      drawSemesters(semestersData);
+    const result = await response.json();
 
-      // Cerrará el modal
-      event.preventDefault();
-      event.stopPropagation();
-      $("#modal-semestre").modal("hide");
-      $(".modal-backdrop.show").remove();
-    },
-    false
-  );
+    // Manejar la respuesta del servidor
+    if (result.data && result.data.drawModalSemester) {
+      // El semestre se creó exitosamente
+      alert('Semestre creado exitosamente');
+      // Puedes hacer algo más si es necesario
+    } else if (result.errors) {
+      // Hubo errores en la creación del semestre
+      alert('Error al crear el semestre');
+      console.error(result.errors);
+    }
+
+    // Volvemos a dibujar las tarjetas de semestres (opcional)
+    drawSemesters(semestersData);
+
+    // Cerrar el modal
+    $("#modal-semestre").modal("hide");
+    $(".modal-backdrop.show").remove();
+  },
+  false
+);
 
   // Abrimos el modal
   $("#modal-semestre").modal("show");
@@ -276,5 +299,6 @@ function drawSelectSemester(semesters, selected = null) {
 $(document).ready(function () {
   // coge los datos de semestres e inserta las cards de semestres en el DOM
   drawSemesters(semestersData);
-  drawSelectsemester(semestersData);
+  drawSelectSemester(semestersData);
 });
+

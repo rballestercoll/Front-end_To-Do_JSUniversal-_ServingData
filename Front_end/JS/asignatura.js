@@ -1,4 +1,6 @@
 var columnaDest = 0;
+var editar = false;
+var tempIndex = 0;
 
 // Datos JSON de las Cards
 var asignaturasData = {
@@ -49,17 +51,17 @@ function createCard(index, asignatura) {
       <div class="card" style="width: 18rem;">
         <div class="card-body">
           <h5 class="card-title" style="background-color: ${asignatura.color};">
-            Asignatura: ${asignatura.name}
+            Asignatura: <span class="nombre-${index}">${asignatura.name}</span>
           </h5>
           <div class="padding-sm">
             <p class="card-text">
-              Fecha inicio: ${asignatura.dateStart}<br>
-              Fecha fin: ${asignatura.dateEnd}<br>
-              Descripción: ${asignatura.description}<br>
-              Opinión: ${asignatura.opinion}<br>
-              Dificultad: ${asignatura.difficulty}
+              Fecha inicio: <span class="fecha-inicio-${index}">${asignatura.dateStart}</span><br>
+              Fecha fin: <span class="fecha-fin-${index}">${asignatura.dateEnd}</span><br>
+              Descripción: <span class="descripcion-${index}">${asignatura.description}</span><br>
+              Opinión: <span class="opinion-${index}">${asignatura.opinion}</span><br>
+              Dificultad: <span class="dificultad-${index}">${asignatura.difficulty}</span>
             </p>
-            <a href="#" class="btn btn-primary" id="editarAsignatura" onclick="drawModalAsignatura(${index})">Editar</a>
+            <a href="#" class="btn btn-primary" id="editarAsignatura" onclick="drawModalAsignaturaEditar(${index})">Editar</a>
             <button class="btn btn-danger" id="eliminar" onclick="eliminar(${index})"><i class="fas fa-trash"></i></button>
           </div>
         </div>
@@ -84,11 +86,37 @@ function dragAndDrop() {
 // Función para abrir el modal de un nuevo asunto
 function drawModalAsignatura(columna) {
   columnaDest = columna;
+  editar = false;
   // Restablecer el formulario
   $("#asignaturaForm")[0].reset();
 
+  $("#exampleModalLabel").text("Añadir Asignatura");
+
   // Mostrar el modal
   $("#modalAsignatura").modal("show");
+}
+
+function drawModalAsignaturaEditar(index) {
+  editar = true;
+  tempIndex = index;
+  $("#asignaturaForm")[0].reset();
+
+  $("#exampleModalLabel").text("Editar Asignatura");
+
+  rellenarFormulario(index);
+
+  // Mostrar el modal
+  $("#modalAsignatura").modal("show");
+}
+
+function rellenarFormulario(index)
+{
+  $("#nombreAsignatura").val($(".nombre-" + index).text());
+  $("#fechaInicio").val($(".fecha-inicio-" + index).text());
+  $("#fechaFin").val($(".fecha-fin-" + index).text());
+  $("#descripcion").val($(".descripcion-" + index).text());
+  $("#opinion").val($(".opinion-" + index).text());
+  $("#dificultad").val($(".dificultad-" + index).text());
 }
 
 // Haga clic en el botón "Añadir Asignatura".
@@ -121,34 +149,49 @@ $("#guardarAsignatura").click(function () {
     return false;
   }
 
-  // Crear un nuevo objeto sujeto
-  var newSubject = {
-    name: nombreAsignatura,
-    dateStart: fechaInicio,
-    dateEnd: fechaFin,
-    color: color,
-    description: descripcion,
-    opinion: opinion,
-    difficulty: dificultad,
-    status: "asignaturas-pending"
-  };
+  if (editar == true)
+  {
+    $(".nombre-" + tempIndex).text($("#nombreAsignatura").val());
+    $(".fecha-inicio-" + tempIndex).text($("#fechaInicio").val());
+    $(".fecha-fin-" + tempIndex).text($("#fechaFin").val());
+    $(".descripcion-" + tempIndex).text($("#descripcion").val());
+    $(".opinion-" + tempIndex).text($("#opinion").val());
+    $(".dificultad-" + tempIndex).text($("#dificultad").val());
+    
+  }
+  else
+  {
 
-  // Añadir el nuevo sujeto a los datos
-  var newIndex = Date.now().toString();
-  asignaturasData[newIndex] = newSubject;
+    // Crear un nuevo objeto sujeto
+    var newSubject = {
+      name: nombreAsignatura,
+      dateStart: fechaInicio,
+      dateEnd: fechaFin,
+      color: color,
+      description: descripcion,
+      opinion: opinion,
+      difficulty: dificultad,
+      status: "asignaturas-pending"
+    };
 
-  // Crear y añadir una nueva tarjeta
-  var newCard = createCard(newIndex, newSubject);
-  
-console.log(columnaDest);
-  if (columnaDest == 1)
-    $("#empezada").append(newCard);
-  if (columnaDest == 2)
-    $("#aprobada").append(newCard);
-  if (columnaDest == 3)
-    $("#suspendida").append(newCard);
-  if (columnaDest == 0)
-    $("#asignaturas-pending").append(newCard);
+    // Añadir el nuevo sujeto a los datos
+    var newIndex = Date.now().toString();
+    asignaturasData[newIndex] = newSubject;
+
+    // Crear y añadir una nueva tarjeta
+    var newCard = createCard(newIndex, newSubject);
+    
+    console.log(columnaDest);
+    if (columnaDest == 1)
+      $("#empezada").append(newCard);
+    if (columnaDest == 2)
+      $("#aprobada").append(newCard);
+    if (columnaDest == 3)
+      $("#suspendida").append(newCard);
+    if (columnaDest == 0)
+      $("#asignaturas-pending").append(newCard);
+
+  }
 
   // Ocultar el modal
   $("#modalAsignatura").modal("hide");
@@ -165,3 +208,27 @@ $("#select-semana").change(function () {
   // Update subjects based on the selected week if needed
 });
 */
+
+fetch('http://localhost:3000/api', {
+  method: 'POST',
+  headers: {'Content-Type': "application/json"},
+  body: JSON.stringify({
+    query: `
+    query {
+      getAllSemestre {
+        id
+        numSemester
+        opinion
+        dateStart
+        dateEnd
+        description
+        difficulty
+      }
+    }
+    `
+  })
+})
+.then(res => res.json())
+.then(data => {
+  console.log(data.data)
+})
